@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>徐益晟 (Yi-Sheng Hsu) | 個人線上履歷</title>
+  <meta name="description" content="徐益晟的個人求職網站 - 畢業於新北高工資料處理科，應徵行政助理、文書處理人員、總務助理。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --primary-light: #EFF6FF;
+      --secondary: #0F172A;
+      --text-main: #1E293B;
+      --text-muted: #64748B;
+      --bg-page: #F8FAFC;
+      --bg-card: #FFFFFF;
+      --border-color: #E2E8F0;
+      --accent: #10B981;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 14px 24px;
+    }
+    .nav-container {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-logo {
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: var(--secondary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-badge {
+      font-size: 0.75rem;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+    .btn-action {
+      background: var(--primary);
+      color: #fff !important;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-weight: 600 !important;
+      text-decoration: none;
+      box-shadow: var(--shadow-sm);
+      transition: background 0.2s, transform 0.1s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-action:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .main-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    /* Hero Section */
+    .hero-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #2563EB, #38BDF8, #10B981);
+    }
+    .hero-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+    .hero-avatar-box {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    .avatar-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2563EB, #1D4ED8);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 800;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .hero-names h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--secondary);
+      letter-spacing: -0.5px;
+    }
+    .hero-names .role-tag {
+      font-size: 1.05rem;
+      color: var(--primary);
+      font-weight: 600;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    .contact-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .contact-pill {
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .contact-pill:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    /* Section Styles */
+    .section-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--secondary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::before {
+      content: "";
+      width: 4px;
+      height: 20px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Experience Timeline */
+    .timeline-item {
+      position: relative;
+      padding-left: 28px;
+      border-left: 2px solid var(--border-color);
+      margin-bottom: 24px;
+    }
+    .timeline-item:last-child {
+      border-left-color: transparent;
+      margin-bottom: 0;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: -7px;
+      top: 4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 2px var(--primary);
+    }
+    .timeline-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .timeline-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--secondary);
+    }
+    .timeline-company {
+      color: var(--primary);
+      font-weight: 600;
+      margin-left: 6px;
+    }
+    .timeline-date {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-weight: 500;
+    }
+    .timeline-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 14px;
+    }
+    .badge {
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+    .timeline-list {
+      list-style-type: none;
+    }
+    .timeline-list li {
+      position: relative;
+      padding-left: 18px;
+      font-size: 0.95rem;
+      color: #334155;
+      margin-bottom: 8px;
+    }
+    .timeline-list li::before {
+      content: "•";
+      position: absolute;
+      left: 2px;
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    /* Skills Grid */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .skill-box {
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+    }
+    .skill-box-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--secondary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .skill-box-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Autobiography */
+    .bio-content p {
+      font-size: 0.96rem;
+      color: #334155;
+      margin-bottom: 14px;
+      text-indent: 2em;
+      line-height: 1.75;
+      text-align: justify;
+    }
+    .bio-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 20px 20px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    @media (max-width: 640px) {
+      .hero-card { padding: 24px 20px; }
+      .hero-names h1 { font-size: 1.6rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">
+        徐益晟 <span class="nav-badge">線上履歷</span>
+      </a>
+      <div class="nav-links">
+        <a href="#about">關於我</a>
+        <a href="#experience">工作經歷</a>
+        <a href="#education">學歷背景</a>
+        <a href="#skills">專長技能</a>
+        <a href="#autobiography">自傳</a>
+        <a href="mailto:f123939f@gmail.com" class="btn-action">✉️ 聯絡我</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-container">
+
+    <!-- Hero Section -->
+    <header class="hero-card" id="about">
+      <div class="hero-header">
+        <div class="hero-avatar-box">
+          <div class="avatar-circle">徐</div>
+          <div class="hero-names">
+            <h1>徐益晟 (Yi-Sheng Hsu)</h1>
+            <div class="role-tag">
+              <span class="status-dot"></span>
+              應徵職缺：行政助理／文書處理人員／總務助理
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-pills">
+        <a href="tel:0968837701" class="contact-pill">📞 0968-837-701</a>
+        <a href="mailto:f123939f@gmail.com" class="contact-pill">✉️ f123939f@gmail.com</a>
+        <span class="contact-pill">📍 新北市 / 台北市</span>
+        <span class="contact-pill">🎓 新北高工 資料處理科</span>
+      </div>
+    </header>
+
+    <!-- 個人簡介 -->
+    <section class="card">
+      <h2 class="section-title">個人簡介 (About Me)</h2>
+      <p style="color: #334155; font-size: 1rem; line-height: 1.75;">
+        畢業於新北高工資料處理科，具備扎實的辦公室電腦文書操作基礎（Word、Excel、PowerPoint）與良好的中英文輸入速度。曾具備半年休閒娛樂場館服務經驗，熟悉顧客接待引導、每日早班開場設備巡檢（SOP 執行）與環境整潔維護。個性細心謹慎、守時負責、配合度高，善於團隊協調與應對進退，能迅速適應辦公室各項行政庶務與資料建檔工作。
+      </p>
+    </section>
+
+    <!-- 工作經歷 -->
+    <section class="card" id="experience">
+      <h2 class="section-title">工作經歷 (Work Experience)</h2>
+      
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-head">
+          <div>
+            <span class="timeline-title">外場服務人員</span>
+            <span class="timeline-company">@ 親子保齡球館</span>
+          </div>
+          <span class="timeline-date">2025/03 – 2025/08</span>
+        </div>
+
+        <div class="timeline-badges">
+          <span class="badge">前台訪客接待</span>
+          <span class="badge">早班 SOP 開場巡檢</span>
+          <span class="badge">環境衛生維護</span>
+          <span class="badge">團隊溝通調度</span>
+        </div>
+
+        <ul class="timeline-list">
+          <li><strong>前台接待與應對進退</strong>：負責顧客迎賓引導、設施說明與需求回應，展現親切耐心的溝通態度與服務熱忱，培養成熟的應對進退與前台接待能力。</li>
+          <li><strong>早班開場與設備巡檢（SOP 執行）</strong>：獨立負責早班開館準備，依作業標準程序依序開啟總電源、中央空調系統與機台設備，確認無異狀後開放營運，具備高度責任心與設備巡檢概念。</li>
+          <li><strong>環境管理與清潔維護</strong>：定時巡檢與維護外場公共空間、動線及洗手間之環境整潔，重視細節與衛生標準，維持良好舒適的公共環境。</li>
+          <li><strong>團隊合作與臨時交辦處理</strong>：配合現場主管與同仁彈性調度，於尖峰時段機動支援各項突發需求，具備良好抗壓性與靈活度。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 學歷背景 -->
+    <section class="card" id="education">
+      <h2 class="section-title">學歷背景 (Education)</h2>
+      
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-head">
+          <div>
+            <span class="timeline-title">資料處理科</span>
+            <span class="timeline-company">@ 新北市立新北高級工業職業學校</span>
+          </div>
+          <span class="timeline-date">2023 – 2026</span>
+        </div>
+
+        <div class="timeline-badges">
+          <span class="badge">Office 文書處理</span>
+          <span class="badge">資料建檔與報表</span>
+          <span class="badge">商業經營概論</span>
+          <span class="badge">資訊硬體維護</span>
+        </div>
+
+        <ul class="timeline-list">
+          <li><strong>專業訓練</strong>：專注於辦公室應用軟體操作、商業資料建檔、報表製作與文書排版。</li>
+          <li><strong>基礎知識</strong>：具備基礎商業行政流程、資料庫觀念與電腦硬體基本維護常識。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 專長技能 -->
+    <section class="card" id="skills">
+      <h2 class="section-title">專業技能與特質 (Skills)</h2>
+      
+      <div class="skills-grid">
+        <div class="skill-box">
+          <div class="skill-box-title">💻 辦公室文書軟體</div>
+          <div class="skill-box-desc">Microsoft Office (Word 排版, Excel 表格與建檔, PowerPoint 簡報)</div>
+        </div>
+
+        <div class="skill-box">
+          <div class="skill-box-title">⌨️ 中英打字輸入</div>
+          <div class="skill-box-desc">中文輸入順暢、英文鍵盤盲打正確率高</div>
+        </div>
+
+        <div class="skill-box">
+          <div class="skill-box-title">📋 行政總務庶務</div>
+          <div class="skill-box-desc">訪客接待、電話禮儀、檔案分類建檔、設備巡檢與開關機 (SOP)</div>
+        </div>
+
+        <div class="skill-box">
+          <div class="skill-box-title">🤝 工作態度與特質</div>
+          <div class="skill-box-desc">細心謹慎、條理分明、抗壓耐勞、守時且配合度高</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 自傳 -->
+    <section class="card bio-content" id="autobiography">
+      <h2 class="section-title">求職自傳 (Autobiography)</h2>
+      <p>
+        您好，我是徐益晟，畢業於新北高工資料處理科。在學三年期間，我專注於辦公室應用軟體操作、資料處理與商業文書排版，能熟練運用 Word、Excel 及 PowerPoint 處理日常文件與資料建檔。資處科嚴謹的課程訓練，培養了我對數字與文字的高度細心，也讓我習慣以條理分明的方式整理各項資訊與檔案。
+      </p>
+      <p>
+        曾於親子保齡球館擔任外場服務人員，這段工作經驗讓我學會如何在第一線面對人群並保持專業親切的態度。在職期間，我負責早班開館作業，每天準時依 SOP 流程開啟全館總電源、空調及娛樂機台，並逐一巡檢確認運作正常；同時亦負責場域清潔維護與顧客引導接待。這份經歷培養了我「守時自律」、「注重細節」與「執行力強」的特質，也讓我深知維護良好環境與設備穩定運作對於整體營運的重要性。
+      </p>
+      <p>
+        行政助理與文書處理是維持公司日常運作高效率的重要推手。我希望能結合高工資處科的專業文書能力，以及在服務業培養出的細心負責與溝通協調力，為貴公司提供穩定、精準的行政支援。未來若有機會加入貴公司，我將秉持虛心學習、積極主動的態度完成各項交辦任務，成為團隊中可靠得力的夥伴。誠摯希望能獲得面試機會，謝謝！
+      </p>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>© 2026 徐益晟 (Yi-Sheng Hsu) · 個人求職履歷網站</p>
+  </footer>
+
+</body>
+</html>
