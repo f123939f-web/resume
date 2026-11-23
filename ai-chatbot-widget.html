@@ -1,0 +1,1318 @@
+<!-- ========================================================
+     徐益晟 AI 數位履歷分身 (AI Chatbot Widget)
+     純前端 HTML + CSS + JS 獨立輕量實作
+     ======================================================== -->
+<div id="ai-resume-widget">
+  <!-- 懸浮啟動按鈕 (FAB) -->
+  <div id="ai-fab-container">
+    <div id="ai-fab-tooltip" class="ai-fab-tooltip">
+      <span class="ai-tooltip-pulse"></span>
+      <span>👋 點擊與 <strong>徐益晟的 AI 分身</strong> 即時對話！</span>
+      <button id="ai-tooltip-close" aria-label="關閉提示">&times;</button>
+    </div>
+    <button id="ai-fab-button" class="ai-fab-button" aria-label="開啟 AI 履歷對話">
+      <div class="ai-glow-ring"></div>
+      <div class="ai-glow-ring secondary"></div>
+      <div class="ai-fab-inner">
+        <!-- 科技感機器人向量圖示 -->
+        <svg class="ai-bot-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="10" rx="3"></rect>
+          <circle cx="12" cy="5" r="2"></circle>
+          <path d="M12 7v4"></path>
+          <line x1="8" y1="16" x2="8.01" y2="16" stroke-width="3"></line>
+          <line x1="16" y1="16" x2="16.01" y2="16" stroke-width="3"></line>
+        </svg>
+        <span class="ai-online-status" title="分身在線中"></span>
+      </div>
+    </button>
+  </div>
+
+  <!-- 聊天彈出主視窗 -->
+  <div id="ai-chat-window" class="ai-chat-window" aria-hidden="true">
+    <!-- 視窗頂部 Header -->
+    <div class="ai-chat-header">
+      <div class="ai-header-left">
+        <div class="ai-avatar-pulse-wrap">
+          <div class="ai-avatar-circle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-4 0V4a2 2 0 0 1 2-2z"></path>
+              <rect x="4" y="6" width="16" height="12" rx="4"></rect>
+              <circle cx="9" cy="12" r="1.5" fill="currentColor"></circle>
+              <circle cx="15" cy="12" r="1.5" fill="currentColor"></circle>
+              <path d="M9 15c1 .8 2 1 3 1s2-.2 3-1"></path>
+            </svg>
+          </div>
+          <span class="ai-pulse-dot"></span>
+        </div>
+        <div class="ai-header-info">
+          <div class="ai-header-title">徐益晟 的 AI 數位分身 <span class="ai-badge-tech">AGENT</span></div>
+          <div class="ai-header-sub">
+            <span class="ai-status-indicator"></span>企管專業 &amp; 產業專案導覽分身
+          </div>
+        </div>
+      </div>
+      <div class="ai-header-actions">
+        <button id="ai-btn-sound" class="ai-icon-btn" title="切換音效" aria-label="切換音效">
+          <svg id="ai-sound-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+        </button>
+        <button id="ai-btn-reset" class="ai-icon-btn" title="重新對話" aria-label="重新對話">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+          </svg>
+        </button>
+        <button id="ai-btn-close" class="ai-icon-btn" title="縮小視窗" aria-label="縮小視窗">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 4 個一鍵點選膠囊標籤 (Pill Tags) -->
+    <div class="ai-quick-pills-bar">
+      <div class="ai-pills-title">✨ 快速提問探索：</div>
+      <div class="ai-pills-scroll">
+        <button class="ai-pill-btn" data-topic="intro">
+          <span class="ai-pill-icon">🙋‍♂️</span>請自我介紹
+        </button>
+        <button class="ai-pill-btn highlight" data-topic="project">
+          <span class="ai-pill-icon">📊</span>介紹你的產業分析專案
+        </button>
+        <button class="ai-pill-btn" data-topic="skills">
+          <span class="ai-pill-icon">💼</span>你的企管核心專長
+        </button>
+        <button class="ai-pill-btn" data-topic="contact">
+          <span class="ai-pill-icon">📬</span>如何連絡你
+        </button>
+      </div>
+    </div>
+
+    <!-- 訊息對話區 -->
+    <div id="ai-messages-container" class="ai-messages-container">
+      <!-- 訊息由 JS 動態注入 -->
+    </div>
+
+    <!-- 底部輸入區 -->
+    <div class="ai-chat-footer">
+      <form id="ai-chat-form" class="ai-chat-input-form" onsubmit="return false;">
+        <input 
+          type="text" 
+          id="ai-user-input" 
+          class="ai-input-field" 
+          placeholder="輸入訊息或詢問專案、專長..." 
+          autocomplete="off" 
+          maxlength="200"
+        />
+        <button type="submit" id="ai-send-btn" class="ai-send-button" aria-label="發送訊息">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </form>
+      <div class="ai-footer-note">徐益晟 AI 數位履歷分身 · Powered by 純前端 Agent 核心</div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* =========================================================
+     AI Chatbot Widget 科技感與現代美學樣式 (純 CSS)
+     ========================================================= */
+  #ai-resume-widget {
+    font-family: 'Plus Jakarta Sans', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 999999;
+    --ai-primary: #2563EB;
+    --ai-primary-glow: rgba(37, 99, 235, 0.45);
+    --ai-cyan: #06B6D4;
+    --ai-cyan-glow: rgba(6, 182, 212, 0.45);
+    --ai-emerald: #10B981;
+    --ai-dark: #0F172A;
+    --ai-card-bg: rgba(255, 255, 255, 0.96);
+    --ai-border: rgba(226, 232, 240, 0.9);
+    --ai-bot-msg-bg: #F8FAFC;
+    --ai-user-msg-bg: linear-gradient(135deg, #2563EB, #1D4ED8);
+  }
+
+  /* 懸浮按鈕容器 */
+  #ai-fab-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  /* 提示氣泡 (Tooltip) */
+  .ai-fab-tooltip {
+    position: absolute;
+    right: 76px;
+    bottom: 6px;
+    background: #0F172A;
+    color: #F8FAFC;
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-size: 0.86rem;
+    font-weight: 500;
+    white-space: nowrap;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    transform: translateX(12px) scale(0.95);
+    pointer-events: none;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .ai-fab-tooltip.show {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    pointer-events: auto;
+  }
+
+  .ai-fab-tooltip strong {
+    color: #38BDF8;
+  }
+
+  .ai-tooltip-pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 8px #10B981;
+    animation: aiPulseDot 1.5s infinite;
+  }
+
+  #ai-tooltip-close {
+    background: none;
+    border: none;
+    color: #94A3B8;
+    font-size: 1.1rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 2px 0 6px;
+    transition: color 0.2s;
+  }
+  #ai-tooltip-close:hover {
+    color: #FFFFFF;
+  }
+
+  /* 懸浮主按鈕 (FAB) */
+  .ai-fab-button {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    background: linear-gradient(135deg, #1E293B, #0F172A);
+    color: #FFFFFF;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35), 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s;
+  }
+
+  .ai-fab-button:hover {
+    transform: scale(1.08) translateY(-2px);
+    box-shadow: 0 12px 32px rgba(37, 99, 235, 0.5), 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  .ai-fab-button:active {
+    transform: scale(0.95);
+  }
+
+  /* 呼吸光環動畫 (Breathing Light Animation) */
+  .ai-glow-ring {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #2563EB, #06B6D4, #10B981, #2563EB);
+    background-size: 300% 300%;
+    z-index: -1;
+    animation: aiRotateGradient 4s linear infinite, aiBreathingGlow 2.5s ease-in-out infinite;
+    opacity: 0.85;
+  }
+
+  .ai-glow-ring.secondary {
+    inset: -8px;
+    opacity: 0.35;
+    filter: blur(8px);
+    animation: aiRotateGradient 6s linear infinite reverse, aiBreathingGlow 2.5s ease-in-out infinite 0.5s;
+  }
+
+  @keyframes aiRotateGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes aiBreathingGlow {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.65;
+    }
+    50% {
+      transform: scale(1.12);
+      opacity: 1;
+      filter: blur(4px);
+    }
+  }
+
+  @keyframes aiPulseDot {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+  }
+
+  .ai-fab-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-bot-icon {
+    width: 32px;
+    height: 32px;
+    stroke: #38BDF8;
+    filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.6));
+    transition: transform 0.3s ease;
+  }
+
+  .ai-fab-button:hover .ai-bot-icon {
+    transform: rotate(10deg) scale(1.1);
+  }
+
+  .ai-online-status {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 10px;
+    height: 10px;
+    background: #10B981;
+    border: 2px solid #0F172A;
+    border-radius: 50%;
+  }
+
+  /* 聊天彈出主視窗 (Chat Window) */
+  .ai-chat-window {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 410px;
+    height: 620px;
+    max-height: calc(100vh - 120px);
+    background: var(--ai-card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--ai-border);
+    border-radius: 20px;
+    box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(24px) scale(0.92);
+    pointer-events: none;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: bottom right;
+  }
+
+  .ai-chat-window.open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  /* 視窗頂部 Header */
+  .ai-chat-header {
+    background: linear-gradient(135deg, #0F172A, #1E293B);
+    color: #FFFFFF;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-chat-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #2563EB, #06B6D4, #10B981);
+  }
+
+  .ai-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .ai-avatar-pulse-wrap {
+    position: relative;
+  }
+
+  .ai-avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563EB, #06B6D4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
+  }
+
+  .ai-avatar-circle svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .ai-pulse-dot {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 9px;
+    height: 9px;
+    background: #10B981;
+    border: 2px solid #0F172A;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #10B981;
+  }
+
+  .ai-header-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .ai-badge-tech {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(56, 189, 248, 0.2);
+    color: #38BDF8;
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    letter-spacing: 0.5px;
+    font-weight: 700;
+  }
+
+  .ai-header-sub {
+    font-size: 0.75rem;
+    color: #94A3B8;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  .ai-status-indicator {
+    width: 6px;
+    height: 6px;
+    background: #10B981;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .ai-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .ai-icon-btn {
+    background: transparent;
+    border: none;
+    color: #94A3B8;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .ai-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #FFFFFF;
+  }
+
+  .ai-icon-btn.active {
+    color: #38BDF8;
+  }
+
+  /* 4 個一鍵點選膠囊標籤 */
+  .ai-quick-pills-bar {
+    background: #F8FAFC;
+    border-bottom: 1px solid var(--ai-border);
+    padding: 10px 14px 12px;
+  }
+
+  .ai-pills-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .ai-pills-scroll {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .ai-pill-btn {
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    color: #1E293B;
+    padding: 6px 11px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+
+  .ai-pill-btn:hover {
+    background: #EFF6FF;
+    border-color: #3B82F6;
+    color: #1D4ED8;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(37, 99, 235, 0.15);
+  }
+
+  .ai-pill-btn.highlight {
+    background: #F0FDF4;
+    border-color: #86EFAC;
+    color: #15803D;
+  }
+  .ai-pill-btn.highlight:hover {
+    background: #DCFCE7;
+    border-color: #22C55E;
+    color: #166534;
+  }
+
+  .ai-pill-icon {
+    font-size: 0.85rem;
+  }
+
+  /* 對話訊息區 */
+  .ai-messages-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: #F8FAFC;
+    scroll-behavior: smooth;
+  }
+
+  /* 自訂滾動條 */
+  .ai-messages-container::-webkit-scrollbar {
+    width: 5px;
+  }
+  .ai-messages-container::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 999px;
+  }
+
+  /* 訊息對齊與外觀 */
+  .ai-msg-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    animation: aiFadeSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes aiFadeSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .ai-msg-row.user {
+    justify-content: flex-end;
+  }
+
+  .ai-msg-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563EB, #06B6D4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFF;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+  }
+
+  .ai-msg-avatar svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .ai-msg-bubble {
+    max-width: 84%;
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #1E293B;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    position: relative;
+    word-break: break-word;
+  }
+
+  .ai-msg-row.bot .ai-msg-bubble {
+    border-top-left-radius: 4px;
+  }
+
+  .ai-msg-row.user .ai-msg-bubble {
+    background: var(--ai-user-msg-bg);
+    color: #FFFFFF;
+    border: none;
+    border-top-right-radius: 4px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  }
+
+  /* 訊息內部排版樣式 */
+  .ai-msg-bubble p {
+    margin-bottom: 8px;
+  }
+  .ai-msg-bubble p:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-msg-bubble ul {
+    margin: 6px 0 10px 18px;
+    padding: 0;
+  }
+
+  .ai-msg-bubble li {
+    margin-bottom: 4px;
+  }
+
+  /* 專案焦點亮點卡片 */
+  .ai-project-highlight-box {
+    background: linear-gradient(135deg, #EFF6FF 0%, #F0FDF4 100%);
+    border: 1px solid #BFDBFE;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin: 10px 0;
+    font-size: 0.85rem;
+  }
+
+  .ai-highlight-title {
+    font-weight: 700;
+    color: #1E40AF;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .ai-metric-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .ai-metric-tag {
+    background: #FFFFFF;
+    border: 1px solid #93C5FD;
+    color: #1E3A8A;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* 專案導覽連動按鈕 (Project Link Button) */
+  .ai-jump-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #2563EB, #1D4ED8);
+    color: #FFFFFF !important;
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    margin-top: 10px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+    border: none;
+  }
+
+  .ai-jump-btn:hover {
+    background: linear-gradient(135deg, #1D4ED8, #1E40AF);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+  }
+
+  .ai-jump-btn svg {
+    transition: transform 0.2s ease;
+  }
+
+  .ai-jump-btn:hover svg {
+    transform: translateX(4px);
+  }
+
+  .ai-jump-btn.emerald {
+    background: linear-gradient(135deg, #10B981, #059669);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+  .ai-jump-btn.emerald:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45);
+  }
+
+  .ai-contact-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .ai-contact-item {
+    background: #F1F5F9;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    color: #1E293B;
+    font-size: 0.84rem;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .ai-contact-item:hover {
+    background: #E2E8F0;
+    border-color: #CBD5E1;
+  }
+
+  .ai-copy-btn {
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    color: #2563EB;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .ai-copy-btn:hover {
+    background: #2563EB;
+    color: #FFFFFF;
+  }
+
+  /* 打字中指示器 (Typing Indicator) */
+  .ai-typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    width: fit-content;
+  }
+
+  .ai-typing-dot {
+    width: 6px;
+    height: 6px;
+    background: #94A3B8;
+    border-radius: 50%;
+    animation: aiTypingBounce 1.4s infinite ease-in-out both;
+  }
+
+  .ai-typing-dot:nth-child(1) { animation-delay: -0.32s; }
+  .ai-typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+  @keyframes aiTypingBounce {
+    0%, 80%, 100% {
+      transform: scale(0.6);
+      opacity: 0.4;
+    }
+    40% {
+      transform: scale(1);
+      opacity: 1;
+      background: #2563EB;
+    }
+  }
+
+  /* 底部輸入表單 */
+  .ai-chat-footer {
+    padding: 12px 14px 10px;
+    background: #FFFFFF;
+    border-top: 1px solid var(--ai-border);
+  }
+
+  .ai-chat-input-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #F8FAFC;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 999px;
+    padding: 4px 6px 4px 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .ai-chat-input-form:focus-within {
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    background: #FFFFFF;
+  }
+
+  .ai-input-field {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 0.88rem;
+    color: #1E293B;
+    outline: none;
+    font-family: inherit;
+  }
+
+  .ai-input-field::placeholder {
+    color: #94A3B8;
+  }
+
+  .ai-send-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563EB, #1D4ED8);
+    border: none;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    flex-shrink: 0;
+  }
+
+  .ai-send-button:hover {
+    transform: scale(1.06);
+    background: linear-gradient(135deg, #1D4ED8, #1E40AF);
+  }
+
+  .ai-send-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .ai-footer-note {
+    text-align: center;
+    font-size: 0.68rem;
+    color: #94A3B8;
+    margin-top: 6px;
+  }
+
+  /* 專案目標區塊高光震顫動畫 (用於連動跳轉) */
+  .ai-section-highlight {
+    animation: aiHighlightFlash 2.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  @keyframes aiHighlightFlash {
+    0% {
+      box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.8), 0 0 25px rgba(37, 99, 235, 0.5);
+      border-color: #2563EB !important;
+      transform: scale(1.015);
+    }
+    50% {
+      box-shadow: 0 0 0 8px rgba(37, 99, 235, 0.2), 0 0 35px rgba(16, 185, 129, 0.4);
+      border-color: #10B981 !important;
+    }
+    100% {
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-color);
+      transform: scale(1);
+    }
+  }
+
+  /* 手機與平板響應式優化 (Mobile Responsive) */
+  @media (max-width: 480px) {
+    #ai-resume-widget {
+      bottom: 16px;
+      right: 16px;
+    }
+    .ai-fab-button {
+      width: 56px;
+      height: 56px;
+    }
+    .ai-bot-icon {
+      width: 28px;
+      height: 28px;
+    }
+    .ai-fab-tooltip {
+      right: 66px;
+      font-size: 0.8rem;
+      padding: 8px 12px;
+    }
+    .ai-chat-window {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      width: 100vw;
+      height: 88vh;
+      max-height: 88vh;
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25);
+    }
+    .ai-quick-pills-bar {
+      padding: 8px 12px 10px;
+    }
+    .ai-pill-btn {
+      padding: 5px 9px;
+      font-size: 0.74rem;
+    }
+  }
+</style>
+
+<script>
+(function() {
+  // 防止重複初始化
+  if (window.__AI_RESUME_WIDGET_INIT__) return;
+  window.__AI_RESUME_WIDGET_INIT__ = true;
+
+  // DOM 節點
+  const fabBtn = document.getElementById('ai-fab-button');
+  const chatWindow = document.getElementById('ai-chat-window');
+  const closeBtn = document.getElementById('ai-btn-close');
+  const resetBtn = document.getElementById('ai-btn-reset');
+  const soundBtn = document.getElementById('ai-btn-sound');
+  const tooltip = document.getElementById('ai-fab-tooltip');
+  const tooltipClose = document.getElementById('ai-tooltip-close');
+  const msgContainer = document.getElementById('ai-messages-container');
+  const chatForm = document.getElementById('ai-chat-form');
+  const userInput = document.getElementById('ai-user-input');
+  const sendBtn = document.getElementById('ai-send-btn');
+  const pillBtns = document.querySelectorAll('.ai-pill-btn');
+
+  let isSoundEnabled = true;
+  let isTyping = false;
+  let hasGreeted = false;
+
+  // 音效合成器 (Web Audio API - 無需外部音訊檔)
+  function playBeep(type) {
+    if (!isSoundEnabled) return;
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      if (type === 'open') {
+        osc.frequency.setValueAtTime(440, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.16);
+      } else if (type === 'send') {
+        osc.frequency.setValueAtTime(520, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(780, ctx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.06, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.11);
+      } else if (type === 'receive') {
+        osc.frequency.setValueAtTime(660, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(990, ctx.currentTime + 0.14);
+        gain.gain.setValueAtTime(0.07, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.14);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.15);
+      }
+    } catch(e) {}
+  }
+
+  // 知識庫與智能問答對話腳本
+  const KNOWLEDGE_BASE = {
+    // 預設歡迎詞
+    welcome: {
+      text: `你好! 我是徐益晟的AI數位分身，隨時為您介紹徐益晟的企管專業與產業專案成果，想了解什麼呢?`
+    },
+    // 1. 請自我介紹
+    intro: {
+      title: "【徐益晟 · 個人簡介與特質】",
+      html: `
+        <p><strong>您好！我是徐益晟</strong>，畢業於新北高工資料處理科，目前積極應徵<strong>行政助理／文書處理人員／總務助理</strong>等相關職位。</p>
+        <p>我具備三大核心競爭優勢：</p>
+        <ul>
+          <li><strong>扎實資處文書功底</strong>：熟練 Word 排版、Excel 數據清洗建檔與報表產出。</li>
+          <li><strong>第一線 SOP 執行力</strong>：曾於休閒娛樂場館負責每日早班開場設備巡檢、全館電源空調管控與優質顧客接待。</li>
+          <li><strong>細心守時與抗壓自律</strong>：具備嚴謹事實查核精神，配合度高且善於團隊協調。</li>
+        </ul>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
+          <button class="ai-jump-btn" onclick="window.__AI_NAVIGATE__('#autobiography')">
+            📜 閱讀完整求職自傳 ➔
+          </button>
+          <button class="ai-jump-btn emerald" onclick="window.__AI_NAVIGATE__('#experience')">
+            🏢 瀏覽工作經歷細節 ➔
+          </button>
+        </div>
+      `
+    },
+    // 2. 介紹你的產業分析專案
+    project: {
+      title: "【專案一：全球 AI 產業趨勢與企業導入效益分析報告】",
+      html: `
+        <p>徐益晟結合新北高工資處科資料檢索與數據整理專業，自主深度調研全球 AI 產業趨勢，並交叉比對國際權威智庫數據：</p>
+        
+        <div class="ai-project-highlight-box">
+          <div class="ai-highlight-title">🔍 國際權威機構數據查驗亮點</div>
+          <ul>
+            <li><strong>市場成長</strong>：2030 全球 AI 規模預估衝破 <strong>$8,267 億美元</strong> (CAGR 36.6%)。</li>
+            <li><strong>企業導入</strong>：全球受訪企業中已有 <strong>65%</strong> 常態導入生成式 AI。</li>
+            <li><strong>文書賦能</strong>：行政常規文件比對與整理工時預期可大幅<strong>縮減 30%~50%</strong>。</li>
+            <li><strong>查驗來源</strong>：嚴格交叉比對 McKinsey, Stanford HAI, Statista 與 Bloomberg。</li>
+          </ul>
+          <div class="ai-metric-tags">
+            <span class="ai-metric-tag">📊 互動式 Chart.js</span>
+            <span class="ai-metric-tag">📋 100% 來源查驗清單</span>
+            <span class="ai-metric-tag">💡 SOP 流程優化實踐</span>
+          </div>
+        </div>
+
+        <p>想直接檢視視覺化圖表與數據稽核清單嗎？為您準備了專屬直達導覽：</p>
+
+        <button class="ai-jump-btn" onclick="window.__AI_NAVIGATE__('#projects')">
+          🚀 前往專案展示與互動圖表區 ➔
+        </button>
+      `
+    },
+    // 3. 你的企管核心專長
+    skills: {
+      title: "【企管與行政核心專長】",
+      html: `
+        <p>徐益晟的核心專長以「<strong>高效行政、標準化流程與數據整理</strong>」為三大支柱：</p>
+        <ul>
+          <li>💻 <strong>商用文書與報表處理</strong>：Microsoft Office (Word、Excel 函數建檔、PPT 簡報)，中英打字精確迅速。</li>
+          <li>📋 <strong>SOP 標準化巡檢管理</strong>：獨立執行早班開館設備巡檢（配電、空調、娛樂機台）、異常通報與環境品質維護。</li>
+          <li>📊 <strong>數據整理與 AI 工具賦能</strong>：具備資料表結構化觀念，善用現代 AI 工具輔助清洗雜亂欄位、校對文件初稿，提升 30% 以上辦公效率。</li>
+          <li>🤝 <strong>應對進退與跨部門協調</strong>：第一線接待親切得體，具備良好的聆聽、換位思考與突發狀況應變彈性。</li>
+        </ul>
+        <button class="ai-jump-btn emerald" onclick="window.__AI_NAVIGATE__('#skills')">
+          🔍 檢視專長技能詳細卡片 ➔
+        </button>
+      `
+    },
+    // 4. 如何連絡你
+    contact: {
+      title: "【徐益晟 · 即時聯絡管道】",
+      html: `
+        <p>非常歡迎企業主管與人資前輩進一步聯繫面試！以下是徐益晟的聯絡方式：</p>
+        <div class="ai-contact-grid">
+          <div class="ai-contact-item">
+            <span>📞 <strong>電話：</strong>0968-837-701</span>
+            <div style="display:flex; gap:4px;">
+              <a href="tel:0968837701" class="ai-copy-btn" style="text-decoration:none;">撥號</a>
+              <button class="ai-copy-btn" onclick="window.__AI_COPY__('0968837701', this)">複製</button>
+            </div>
+          </div>
+          <div class="ai-contact-item">
+            <span>✉️ <strong>Email：</strong>f123939f@gmail.com</span>
+            <div style="display:flex; gap:4px;">
+              <a href="mailto:f123939f@gmail.com" class="ai-copy-btn" style="text-decoration:none;">寫信</a>
+              <button class="ai-copy-btn" onclick="window.__AI_COPY__('f123939f@gmail.com', this)">複製</button>
+            </div>
+          </div>
+          <div class="ai-contact-item">
+            <span>📍 <strong>希望工作地點：</strong>新北市／台北市</span>
+            <span style="font-size:0.75rem; color:#64748B;">即刻可配合面試</span>
+          </div>
+        </div>
+      `
+    }
+  };
+
+  // 全域導覽連動函式
+  window.__AI_NAVIGATE__ = function(selector) {
+    const el = document.querySelector(selector);
+    if (!el) return;
+    
+    // 平滑滾動到該區域
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // 觸發醒目的高光聚焦點亮動畫
+    el.classList.remove('ai-section-highlight');
+    void el.offsetWidth; // 強制重繪
+    el.classList.add('ai-section-highlight');
+
+    // 在小螢幕手機上自動縮小視窗以利觀看
+    if (window.innerWidth <= 480) {
+      setTimeout(() => {
+        chatWindow.classList.remove('open');
+      }, 500);
+    }
+  };
+
+  // 全域複製小工具
+  window.__AI_COPY__ = function(text, btnElement) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btnElement.innerText;
+        btnElement.innerText = '已複製✓';
+        btnElement.style.background = '#10B981';
+        btnElement.style.color = '#FFF';
+        setTimeout(() => {
+          btnElement.innerText = orig;
+          btnElement.style.background = '';
+          btnElement.style.color = '';
+        }, 1800);
+      });
+    } else {
+      prompt("請複製以下內容：", text);
+    }
+  };
+
+  // 新增訊息到視窗
+  function appendMessage(sender, contentHtml, isHtml = true) {
+    const row = document.createElement('div');
+    row.className = `ai-msg-row ${sender}`;
+
+    if (sender === 'bot') {
+      row.innerHTML = `
+        <div class="ai-msg-avatar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="10" rx="3"></rect>
+            <circle cx="12" cy="5" r="2"></circle>
+            <path d="M12 7v4"></path>
+          </svg>
+        </div>
+        <div class="ai-msg-bubble">
+          ${isHtml ? contentHtml : `<p>${escapeHtml(contentHtml)}</p>`}
+        </div>
+      `;
+    } else {
+      row.innerHTML = `
+        <div class="ai-msg-bubble">
+          <p>${escapeHtml(contentHtml)}</p>
+        </div>
+      `;
+    }
+
+    msgContainer.appendChild(row);
+    msgContainer.scrollTop = msgContainer.scrollHeight;
+  }
+
+  // 模擬打字效果與思考狀態
+  function simulateAiResponse(contentHtml, callback) {
+    if (isTyping) return;
+    isTyping = true;
+    sendBtn.disabled = true;
+
+    // 顯示 typing indicator
+    const typingRow = document.createElement('div');
+    typingRow.className = 'ai-msg-row bot';
+    typingRow.id = 'ai-typing-temp';
+    typingRow.innerHTML = `
+      <div class="ai-msg-avatar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="10" rx="3"></rect>
+          <circle cx="12" cy="5" r="2"></circle>
+          <path d="M12 7v4"></path>
+        </svg>
+      </div>
+      <div class="ai-typing-indicator">
+        <span class="ai-typing-dot"></span>
+        <span class="ai-typing-dot"></span>
+        <span class="ai-typing-dot"></span>
+      </div>
+    `;
+    msgContainer.appendChild(typingRow);
+    msgContainer.scrollTop = msgContainer.scrollHeight;
+
+    // 模擬思考與打字延遲 (約 400~700ms 呈現流暢靈敏手感)
+    setTimeout(() => {
+      const temp = document.getElementById('ai-typing-temp');
+      if (temp) temp.remove();
+
+      appendMessage('bot', contentHtml, true);
+      playBeep('receive');
+      isTyping = false;
+      sendBtn.disabled = false;
+      if (callback) callback();
+    }, 550);
+  }
+
+  // 轉義 HTML
+  function escapeHtml(str) {
+    return str.replace(/[&<>"']/g, function(m) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+    });
+  }
+
+  // 智能意圖匹配 (自然語言關鍵字匹配)
+  function handleUserQuery(query) {
+    const q = query.trim().toLowerCase();
+    if (!q) return;
+
+    // 使用者訊息上屏
+    appendMessage('user', query, false);
+    playBeep('send');
+    userInput.value = '';
+
+    // 判斷關鍵詞
+    if (q.includes('專案') || q.includes('報告') || q.includes('ai') || q.includes('分析') || q.includes('研究') || q.includes('數據') || q.includes('圖表')) {
+      simulateAiResponse(KNOWLEDGE_BASE.project.html);
+    } else if (q.includes('專長') || q.includes('技能') || q.includes('能力') || q.includes('企管') || q.includes('行政') || q.includes('文書') || q.includes('sop') || q.includes('office') || q.includes('excel')) {
+      simulateAiResponse(KNOWLEDGE_BASE.skills.html);
+    } else if (q.includes('聯絡') || q.includes('連絡') || q.includes('電話') || q.includes('信箱') || q.includes('email') || q.includes('mail') || q.includes('面試') || q.includes('手機')) {
+      simulateAiResponse(KNOWLEDGE_BASE.contact.html);
+    } else if (q.includes('自傳') || q.includes('介紹') || q.includes('是誰') || q.includes('經歷') || q.includes('學歷') || q.includes('背景') || q.includes('保齡球') || q.includes('高工')) {
+      simulateAiResponse(KNOWLEDGE_BASE.intro.html);
+    } else if (q.includes('你好') || q.includes('嗨') || q.includes('早安') || q.includes('哈囉') || q.includes('hello') || q.includes('hi')) {
+      simulateAiResponse(`
+        <p>您好！很高興與您交流 😊</p>
+        <p>${KNOWLEDGE_BASE.welcome.text}</p>
+        <p>您可以點擊上方的快捷按鈕，或隨時在下方輸入您的問題！</p>
+      `);
+    } else {
+      // 智慧兜底回答
+      simulateAiResponse(`
+        <p>感謝您的提問！關於「<strong>${escapeHtml(query)}</strong>」：</p>
+        <p>我是徐益晟的專屬數位分身，能為您完整呈現益晟的<strong>企管行政專業</strong>、<strong>全球 AI 產業趨勢專案成果</strong>與<strong>工作經歷</strong>。</p>
+        <p>您可以點選上方膠囊標籤或嘗試詢問：</p>
+        <ul>
+          <li>👉 「介紹你的產業分析專案」</li>
+          <li>👉 「你的企管核心專長」</li>
+          <li>👉 「請自我介紹」或「如何連絡你」</li>
+        </ul>
+      `);
+    }
+  }
+
+  // 切換聊天視窗開關
+  function toggleChat(forceOpen) {
+    const isOpen = typeof forceOpen === 'boolean' ? forceOpen : !chatWindow.classList.contains('open');
+    if (isOpen) {
+      chatWindow.classList.add('open');
+      chatWindow.setAttribute('aria-hidden', 'false');
+      tooltip.classList.remove('show');
+      playBeep('open');
+
+      // 首次開啟展示預設歡迎詞
+      if (!hasGreeted) {
+        hasGreeted = true;
+        simulateAiResponse(`<p>${KNOWLEDGE_BASE.welcome.text}</p>`);
+      }
+      setTimeout(() => userInput.focus(), 300);
+    } else {
+      chatWindow.classList.remove('open');
+      chatWindow.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  // 重置對話
+  function resetChat() {
+    msgContainer.innerHTML = '';
+    hasGreeted = true;
+    simulateAiResponse(`<p>${KNOWLEDGE_BASE.welcome.text}</p>`);
+  }
+
+  // 事件綁定
+  fabBtn.addEventListener('click', () => toggleChat());
+  closeBtn.addEventListener('click', () => toggleChat(false));
+  resetBtn.addEventListener('click', resetChat);
+
+  soundBtn.addEventListener('click', () => {
+    isSoundEnabled = !isSoundEnabled;
+    soundBtn.classList.toggle('active', isSoundEnabled);
+    soundBtn.title = isSoundEnabled ? '音效已開啟' : '音效已靜音';
+  });
+
+  tooltipClose.addEventListener('click', (e) => {
+    e.stopPropagation();
+    tooltip.classList.remove('show');
+  });
+
+  // 4 大膠囊標籤點擊事件
+  pillBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const topic = btn.getAttribute('data-topic');
+      if (KNOWLEDGE_BASE[topic]) {
+        // 先輸出使用者點擊的問題標籤名稱
+        const topicNames = {
+          intro: '請自我介紹',
+          project: '介紹你的產業分析專案',
+          skills: '你的企管核心專長',
+          contact: '如何連絡你'
+        };
+        appendMessage('user', topicNames[topic] || btn.innerText.trim(), false);
+        playBeep('send');
+        simulateAiResponse(KNOWLEDGE_BASE[topic].html);
+      }
+    });
+  });
+
+  // 送出表單事件
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (userInput.value.trim() && !isTyping) {
+      handleUserQuery(userInput.value);
+    }
+  });
+
+  // 頁面載入 1.8 秒後溫和浮現提示氣泡
+  setTimeout(() => {
+    if (!chatWindow.classList.contains('open')) {
+      tooltip.classList.add('show');
+    }
+  }, 1800);
+
+})();
+</script>
